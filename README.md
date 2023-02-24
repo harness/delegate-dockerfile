@@ -3,11 +3,11 @@
 
 This repository provides the Harness delegate Dockerfile. You can use this Dockerfile to build custom delegate images.
 
-The repository includes the following versions of the Dockerfile.
+The repository includes the following versions of the delegate Dockerfile.
 
 ## Dockerfile
 
-Dockerfile: Through this you can create the delegate image with tools. We have added below tools by default in this image.
+Use `Dockerfile` to create the delegate image with tools. This image includes the following tools by default.
 
   - `kubectl` v1.24.3
   - `helm` v2.13.1 
@@ -23,10 +23,10 @@ Dockerfile: Through this you can create the delegate image with tools. We have a
 
 ## Dockerfile-minimal
 
-Use Dockerfile-minimal to create delegate images without tools. This image includes only the SCM client tool.
+Use `Dockerfile-minimal` to create delegate images without tools. This image includes only the SCM client tool.
 
 :::note
-You can also replace existing tools with those that you prefer to use for CI/CD.
+You can also replace the existing tools with those that you prefer to use for CI/CD.
 :::
 
 ## Build the image
