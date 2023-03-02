@@ -1,0 +1,11 @@
+version: 1
+name: Sample Pipeline_1677774814886
+stages:
+  - name: build
+    type: ci
+    spec:
+      steps:
+        - name: Run echo
+          type: script
+          spec:
+            run: echo "Hello Harness CI!"
