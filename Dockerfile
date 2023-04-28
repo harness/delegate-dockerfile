@@ -40,7 +40,7 @@ ENV PATH="$JAVA_HOME/bin:${PATH}"
 
 ARG TARGETARCH
 ARG BASEURL=https://app.harness.io/public/shared/delegates
-ARG DELEGATEVERSION
+ARG DELEGATEVERSION=79107
 
 RUN mkdir -m 777 -p client-tools/kubectl/v1.24.3 \
   && curl -s -L -o client-tools/kubectl/v1.24.3/kubectl https://app.harness.io/public/shared/tools/kubectl/release/v1.24.3/bin/linux/$TARGETARCH/kubectl \
@@ -62,8 +62,8 @@ RUN mkdir -m 777 -p client-tools/kubectl/v1.24.3 \
   && curl -s -L -o client-tools/oc/v4.2.16/oc https://app.harness.io/public/shared/tools/oc/release/v4.2.16/bin/linux/$TARGETARCH/oc \
   && mkdir -m 777 -p client-tools/kustomize/v4.5.4 \
   && curl -s -L -o client-tools/kustomize/v4.5.4/kustomize https://app.harness.io/public/shared/tools/kustomize/release/v4.5.4/bin/linux/$TARGETARCH/kustomize \
-  && mkdir -m 777 -p client-tools/scm/9182190a \
-  && curl -s -L -o client-tools/scm/9182190a/scm https://app.harness.io/public/shared/tools/scm/release/9182190a/bin/linux/$TARGETARCH/scm \
+  && mkdir -m 777 -p client-tools/scm/ef2d02fb \
+  && curl -s -L -o client-tools/scm/ef2d02fb/scm https://app.harness.io/public/shared/tools/scm/release/ef2d02fb/bin/linux/$TARGETARCH/scm \
   && chmod -R 775 /opt/harness-delegate \
   && chgrp -R 0 /opt/harness-delegate  \
   && chown -R 1001 /opt/harness-delegate
