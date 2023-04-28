@@ -3,7 +3,7 @@
 
 This repository provides the Harness delegate Dockerfile. You can use this Dockerfile to build custom delegate images.
 
-The repository includes the following versions of the delegate Dockerfile.
+The repository includes the following versions of the delegate Dockerfile. Please note that if you are building and using your own images then turn auto upgrade off for kubernetes delegates. Read documentation at https://developer.harness.io/docs/platform/Delegates/install-delegates/delegate-upgrades-and-expiration
 
 ## Dockerfile
 
@@ -24,6 +24,10 @@ Use `Dockerfile` to create the delegate image with tools. This image includes th
 ## Dockerfile-minimal
 
 Use `Dockerfile-minimal` to create delegate images without tools. This image includes only the SCM client tool.
+
+## Dockerfile-ubuntu
+
+Use `Dockerfile-ubuntu` to create delegate delegate images which are ubuntu based. This image includes all the same tools of default Dockerfile
 
 :::note
 You can also replace the existing tools with those that you prefer to use for CI/CD.
