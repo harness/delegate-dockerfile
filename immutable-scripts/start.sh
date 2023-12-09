@@ -76,7 +76,7 @@ append_config "trustAllCertificates" ${TRUST_ALL_CERTIFICATES:-false}
 
 # 3. load custom certificates
 TRUST_STORE_FILE=""
-source ./load_certificates.sh
+source ./load_certificates.sh "$HOME/ca-bundle"
 if [ ! -z $TRUST_STORE_FILE ] && [ -f $TRUST_STORE_FILE ]; then
   JAVA_OPTS="$JAVA_OPTS -Djavax.net.ssl.trustStore=$TRUST_STORE_FILE"
 fi

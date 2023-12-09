@@ -28,7 +28,7 @@ function import_der_file() {
   keytool -noprompt -importcert -trustcacerts -alias $ALIAS -file $DER_FILE_PATH -keystore $TRUST_STORE_FILE -storepass $PASSWORD
 }
 
-CA_CERTS_DIR="$HOME/ca-bundle"
+CA_CERTS_DIR=$1
 
 if [ ! -d "$CA_CERTS_DIR" ]; then
   echo "Directory $CA_CERTS_DIR does not exist. Skip importing certificates."
