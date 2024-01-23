@@ -96,4 +96,4 @@ USER 1001
 ```
 ### Important notes
 1. Please DO NOT copy your certificates into the folder at `/opt/harness-delegate/ca-bundle`. This is a reserved folder used for installing additional certificates a delegate starts.
-2. Set user to root before running the load_certificates.sh script. Then set it back to normal user after.
+2. Set the user to root before running the `load_certificates.sh` script. Then the user back to normal access after you run the script.
