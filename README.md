@@ -94,6 +94,6 @@ RUN curl -s -L -o delegate.jar $BASEURL/$DELEGATEVERSION/delegate.jar
 
 USER 1001
 ```
-Note that 
+### Important notes
 1. please DO NOT copy your certificates into folder at `/opt/harness-delegate/ca-bundle`, because this is a reserved folder used for installing additional certificates to at the time of starting a delegate.
 2. Set user to root before running the load_certificates.sh script. Then set it back to normal user after.
