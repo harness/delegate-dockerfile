@@ -1,0 +1,15 @@
+FROM docker.io/harness/delegate:<tag>
+
+USER root
+
+# This is only needed for running Harness CI module
+ENV DESTINATION_CA_PATH=<path to list of paths in the build pod where you want the certs to be mounted>
+
+# Please take the source scripts from this github repo
+RUN curl -o load_certificates.sh https://raw.githubusercontent.com/harness/delegate-dockerfile/main/immutable-scripts/load_certificates.sh
+COPY <path to the directory of my local certs> <path to the directory of certs inside the container>
+RUN bash -c "/opt/harness-delegate/load_certificates.sh <path to the directory of certs inside the container>"
+
+USER 1001
+
+CMD [ "./start.sh" ]

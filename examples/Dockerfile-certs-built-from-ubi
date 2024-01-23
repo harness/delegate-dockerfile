@@ -1,0 +1,61 @@
+# Copyright 2022 Harness Inc. All rights reserved.
+# Use of this source code is governed by the PolyForm Free Trial 1.0.0 license
+# that can be found in the licenses directory at the root of this repository, also available at
+# https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
+
+FROM redhat/ubi8-minimal:8.8
+
+LABEL name="harness/delegate-minimal" \
+      vendor="Harness" \
+      maintainer="Harness"
+
+RUN microdnf update --nodocs --setopt=install_weak_deps=0 \
+  && microdnf install --nodocs \
+    procps \
+    hostname \
+    lsof \
+    findutils \
+    tar \
+    gzip \
+    shadow-utils \
+    glibc-langpack-en \
+  && useradd -u 1001 -g 0 harness \
+  && microdnf remove shadow-utils \
+  && microdnf clean all \
+  && rm -rf /var/cache/yum \
+  && mkdir -p /opt/harness-delegate/
+
+COPY immutable-scripts /opt/harness-delegate/
+
+WORKDIR /opt/harness-delegate
+
+ARG TARGETARCH
+ARG BASEURL=https://app.harness.io/public/shared/delegates
+ARG DELEGATEVERSION
+
+COPY --from=eclipse-temurin:17.0.7_7-jre-ubi9-minimal /opt/java/openjdk/ /opt/java/openjdk/
+ENV JAVA_HOME=/opt/java/openjdk/
+
+RUN mkdir -m 777 -p client-tools/scm/93b3c9f1 \
+  && curl -s -L -o client-tools/scm/93b3c9f1/scm https://app.harness.io/public/shared/tools/scm/release/93b3c9f1/bin/linux/$TARGETARCH/scm \
+  && chmod -R 775 /opt/harness-delegate \
+  && chown -R 1001 /opt/harness-delegate \
+  && chown -R 1001 $JAVA_HOME/lib/security/cacerts
+RUN mkdir -p /opt/harness-delegate/additional_certs_pem_split
+
+
+ENV LANG=en_US.UTF-8
+ENV HOME=/opt/harness-delegate
+ENV CLIENT_TOOLS_DOWNLOAD_DISABLED=true
+ENV INSTALL_CLIENT_TOOLS_IN_BACKGROUND=true
+ENV PATH="$JAVA_HOME/bin:${PATH}"
+ENV SHARED_CA_CERTS_PATH=/opt/harness-delegate/additional_certs_pem_split
+
+RUN curl -s -L -o delegate.jar $BASEURL/$DELEGATEVERSION/delegate.jar
+
+COPY <path to the directory of my local certs> <path to the directory of certs inside the container>
+RUN bash -c "/opt/harness-delegate/load_certificates.sh <path to the directory of certs inside the container>"
+
+USER 1001
+
+CMD [ "./start.sh" ]
