@@ -36,8 +36,8 @@ ARG DELEGATEVERSION
 COPY --from=eclipse-temurin:17.0.7_7-jre-ubi9-minimal /opt/java/openjdk/ /opt/java/openjdk/
 ENV JAVA_HOME=/opt/java/openjdk/
 
-RUN mkdir -m 777 -p client-tools/scm/0f157933 \
-  && curl -s -L -o client-tools/scm/0f157933/scm https://app.harness.io/public/shared/tools/scm/release/0f157933/bin/linux/$TARGETARCH/scm \
+RUN mkdir -m 777 -p client-tools/scm/2f24e4b26 \
+  && curl -s -L -o client-tools/scm/2f24e4b26/scm https://app.harness.io/public/shared/tools/scm/release/2f24e4b26/bin/linux/$TARGETARCH/scm \
   && chmod -R 775 /opt/harness-delegate \
   && chgrp -R 0 /opt/harness-delegate \
   && chown -R 1001 /opt/harness-delegate \

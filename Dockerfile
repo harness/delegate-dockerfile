@@ -59,8 +59,8 @@ RUN mkdir -m 777 -p client-tools/kubectl/v1.28.7 \
   && curl -s -L -o client-tools/tf-config-inspect/v1.2/terraform-config-inspect https://app.harness.io/public/shared/tools/terraform-config-inspect/v1.2/linux/$TARGETARCH/terraform-config-inspect \
   && mkdir -m 777 -p client-tools/oc/v4.13.32 \
   && curl -s -L -o client-tools/oc/v4.13.32/oc https://app.harness.io/public/shared/tools/oc/release/v4.13.32/bin/linux/$TARGETARCH/oc \
-  && mkdir -m 777 -p client-tools/scm/0f157933 \
-  && curl -s -L -o client-tools/scm/0f157933/scm https://app.harness.io/public/shared/tools/scm/release/0f157933/bin/linux/$TARGETARCH/scm \
+  && mkdir -m 777 -p client-tools/scm/2f24e4b26 \
+  && curl -s -L -o client-tools/scm/2f24e4b26/scm https://app.harness.io/public/shared/tools/scm/release/2f24e4b26/bin/linux/$TARGETARCH/scm \
   && mkdir -m 777 -p client-tools/kubelogin/v0.1.1 \
   && curl -s -L -o client-tools/kubelogin/v0.1.1/kubelogin https://app.harness.io/public/shared/tools/kubelogin/release/v0.1.1/bin/linux/$TARGETARCH/kubelogin \
   && mkdir -m 777 -p client-tools/harness-credentials-plugin/v0.1.0 \
