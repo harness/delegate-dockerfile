@@ -53,8 +53,17 @@ ANCHOR_PATH="/etc/pki/ca-trust/source/anchors/"
 
 # copy certs to /etc/pki/ca-trust/source/anchors/ to update RHEL trust system
 # root user required
-cp $CA_CERTS_DIR/* $ANCHOR_PATH
-update-ca-trust enable
+if [ -w $ANCHOR_PATH ]; then
+  cp $CA_CERTS_DIR/* $ANCHOR_PATH
+else
+  echo "Anchor location $ANCHOR_PATH is not writable or bundle doesn't exist. Skip copying certs to anchor."
+fi
+
+if [ `id -u` -eq 0 ]; then
+  update-ca-trust enable
+else
+  echo "Please run the delegate as root to update the system trust store."
+fi
 
 # Import custom certificates to java truststore file
 TRUST_STORE_FILE=$JAVA_HOME/lib/security/cacerts
@@ -62,8 +71,8 @@ TRUST_STORE_FILE=$JAVA_HOME/lib/security/cacerts
 # In case, people can still use this script as it'd be a useful tool
 # to unblock customers in older versions of delegate
 if [ -z "$SHARED_CA_CERTS_PATH" ]; then
-     echo "SHARED_CA_CERTS_PATH not set. using default path $HOME/additional_certs_pem_split"
-     export SHARED_CA_CERTS_PATH=$HOME/additional_certs_pem_split
+     echo "SHARED_CA_CERTS_PATH not set. using default path $WORKING_DIR/additional_certs_pem_split"
+     export SHARED_CA_CERTS_PATH=$WORKING_DIR/additional_certs_pem_split
      mkdir -p $SHARED_CA_CERTS_PATH
 fi
 
