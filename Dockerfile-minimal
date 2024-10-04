@@ -9,8 +9,8 @@ LABEL name="harness/delegate-minimal" \
       vendor="Harness" \
       maintainer="Harness"
 
-RUN microdnf update --nodocs --setopt=install_weak_deps=0 \
-  && microdnf install -y --nodocs \
+RUN microdnf update -y --nodocs --setopt=install_weak_deps=0 
+RUN microdnf install -y --nodocs \
     procps \
     hostname \
     lsof \
@@ -18,12 +18,12 @@ RUN microdnf update --nodocs --setopt=install_weak_deps=0 \
     tar \
     gzip \
     shadow-utils \
-    glibc-langpack-en \
-  && useradd -u 1001 -g 0 harness \
-  && microdnf remove -y shadow-utils \
-  && microdnf clean all \
-  && rm -rf /var/cache/yum \
-  && mkdir -p /opt/harness-delegate/
+    glibc-langpack-en 
+RUN useradd -u 1001 -g 0 harness 
+RUN microdnf -y remove shadow-utils 
+RUN microdnf -y clean all 
+RUN rm -rf /var/cache/yum 
+RUN mkdir -p /opt/harness-delegate/
 
 COPY immutable-scripts /opt/harness-delegate/
 
