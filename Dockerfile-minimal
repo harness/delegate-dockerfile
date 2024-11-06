@@ -35,11 +35,13 @@ ARG BASEURL=https://app.harness.io/public/shared/delegates
 ARG DELEGATEVERSION
 
 COPY --from=eclipse-temurin:17.0.7_7-jre-ubi9-minimal /opt/java/openjdk/ /opt/java/openjdk/
-ENV JAVA_HOME=/opt/java/openjdk/
+ENV JAVA_HOME=/opt/java/openjdk
 
 RUN set -o pipefail \
-  && mkdir -m 777 -p client-tools/scm/a81c96813 \
-  && curl -f -s -L -o client-tools/scm/a81c96813/scm https://app.harness.io/public/shared/tools/scm/release/a81c96813/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
+  && mkdir -m 777 -p client-tools/scm/060d67b54 \
+  && curl -f -s -L -o client-tools/scm/060d67b54/scm https://app.harness.io/public/shared/tools/scm/release/060d67b54/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
+  && curl -f -s -L -o $JAVA_HOME/bin/jattach https://app.harness.io/public/shared/tools/jattach/release/v2.2/bin/linux/$TARGETARCH/jattach || { echo "Failed to download jattach"; exit 1; } \
+  && chmod +x $JAVA_HOME/bin/jattach \
   && chmod -R 775 /opt/harness-delegate \
   && chgrp -R 0 /opt/harness-delegate \
   && chown -R 1001 /opt/harness-delegate \
@@ -50,6 +52,7 @@ ENV HOME=/opt/harness-delegate
 ENV CLIENT_TOOLS_DOWNLOAD_DISABLED=true
 ENV INSTALL_CLIENT_TOOLS_IN_BACKGROUND=true
 ENV PATH="$JAVA_HOME/bin:${PATH}"
+ENV PATH="$JAVA_HOME/bin/jattach:${PATH}"
 
 RUN curl -s -L -o delegate.jar $BASEURL/$DELEGATEVERSION/delegate.jar
 
