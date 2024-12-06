@@ -3,7 +3,7 @@
 # that can be found in the licenses directory at the root of this repository, also available at
 # https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
 
-FROM redhat/ubi8-minimal:8.8
+FROM redhat/ubi8-minimal:8.10
 
 LABEL name="harness/delegate" \
       vendor="Harness" \
@@ -49,8 +49,8 @@ RUN set -o pipefail \
   && curl -f -s -L -o client-tools/kubectl/v1.28.7/kubectl https://app.harness.io/public/shared/tools/kubectl/release/v1.28.7/bin/linux/$TARGETARCH/kubectl || { echo "Failed to download kubectl"; exit 1; } \
   && mkdir -m 777 -p client-tools/helm/v3.13.3 \
   && curl -f -s -L -o client-tools/helm/v3.13.3/helm https://app.harness.io/public/shared/tools/helm/release/v3.13.3/bin/linux/$TARGETARCH/helm || { echo "Failed to download helm"; exit 1; } \
-  && mkdir -m 777 -p client-tools/harness-helm-post-renderer/v0.1.0 \
-  && curl -f -s -L -o client-tools/harness-helm-post-renderer/v0.1.0/harness-helm-post-renderer https://app.harness.io/public/shared/tools/harness-helm-post-renderer/release/v0.1.0/bin/linux/$TARGETARCH/harness-helm-post-renderer || { echo "Failed to download harness-helm-post-renderer"; exit 1; } \
+  && mkdir -m 777 -p client-tools/harness-helm-post-renderer/v0.1.3 \
+  && curl -f -s -L -o client-tools/harness-helm-post-renderer/v0.1.3/harness-helm-post-renderer https://app.harness.io/public/shared/tools/harness-helm-post-renderer/release/v0.1.3/bin/linux/$TARGETARCH/harness-helm-post-renderer || { echo "Failed to download harness-helm-post-renderer"; exit 1; } \
   && mkdir -m 777 -p client-tools/go-template/v0.4.5 \
   && curl -f -s -L -o client-tools/go-template/v0.4.5/go-template https://app.harness.io/public/shared/tools/go-template/release/v0.4.5/bin/linux/$TARGETARCH/go-template || { echo "Failed to download go-template"; exit 1; } \
   && mkdir -m 777 -p client-tools/harness-pywinrm/v0.4-dev \
@@ -61,8 +61,8 @@ RUN set -o pipefail \
   && curl -f -s -L -o client-tools/tf-config-inspect/v1.2/terraform-config-inspect https://app.harness.io/public/shared/tools/terraform-config-inspect/v1.2/linux/$TARGETARCH/terraform-config-inspect || { echo "Failed to download terraform-config-inspect"; exit 1; } \
   && mkdir -m 777 -p client-tools/oc/v4.15.25 \
   && curl -f -s -L -o client-tools/oc/v4.15.25/oc https://app.harness.io/public/shared/tools/oc/release/v4.15.25/bin/linux/$TARGETARCH/oc || { echo "Failed to download oc"; exit 1; } \
-  && mkdir -m 777 -p client-tools/scm/060d67b54 \
-  && curl -f -s -L -o client-tools/scm/060d67b54/scm https://app.harness.io/public/shared/tools/scm/release/060d67b54/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
+  && mkdir -m 777 -p client-tools/scm/34a795585 \
+  && curl -f -s -L -o client-tools/scm/34a795585/scm https://app.harness.io/public/shared/tools/scm/release/34a795585/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
   && mkdir -m 777 -p client-tools/kubelogin/v0.1.1 \
   && curl -f -s -L -o client-tools/kubelogin/v0.1.1/kubelogin https://app.harness.io/public/shared/tools/kubelogin/release/v0.1.1/bin/linux/$TARGETARCH/kubelogin || { echo "Failed to download kubelogin"; exit 1; } \
   && mkdir -m 777 -p client-tools/harness-credentials-plugin/v0.1.0 \
@@ -80,7 +80,7 @@ ENV PATH=/opt/harness-delegate/client-tools/go-template/v0.4.5/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/chartmuseum/v0.15.0/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/tf-config-inspect/v1.2/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/helm/v3.13.3/:$PATH
-ENV PATH=/opt/harness-delegate/client-tools/harness-helm-post-renderer/v0.1.0/:$PATH
+ENV PATH=/opt/harness-delegate/client-tools/harness-helm-post-renderer/v0.1.3/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/oc/v4.15.25/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/kubelogin/v0.1.1/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/harness-credentials-plugin/v0.1.0/:$PATH
