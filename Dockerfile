@@ -3,11 +3,14 @@
 # that can be found in the licenses directory at the root of this repository, also available at
 # https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
 
-FROM redhat/ubi8-minimal:8.10
+FROM redhat/ubi9-minimal:9.4
 
 LABEL name="harness/delegate" \
       vendor="Harness" \
       maintainer="Harness"
+
+RUN echo -e '#!/bin/sh\nexec /usr/bin/microdnf -y "$@"' > /usr/local/bin/microdnf \
+  && chmod +x /usr/local/bin/microdnf
 
 RUN microdnf update --nodocs --setopt=install_weak_deps=0 \
   && microdnf install --nodocs \
@@ -61,8 +64,8 @@ RUN set -o pipefail \
   && curl -f -s -L -o client-tools/tf-config-inspect/v1.2/terraform-config-inspect https://app.harness.io/public/shared/tools/terraform-config-inspect/v1.2/linux/$TARGETARCH/terraform-config-inspect || { echo "Failed to download terraform-config-inspect"; exit 1; } \
   && mkdir -m 777 -p client-tools/oc/v4.15.25 \
   && curl -f -s -L -o client-tools/oc/v4.15.25/oc https://app.harness.io/public/shared/tools/oc/release/v4.15.25/bin/linux/$TARGETARCH/oc || { echo "Failed to download oc"; exit 1; } \
-  && mkdir -m 777 -p client-tools/scm/f52a6de3e \
-  && curl -f -s -L -o client-tools/scm/f52a6de3e/scm https://app.harness.io/public/shared/tools/scm/release/f52a6de3e/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
+  && mkdir -m 777 -p client-tools/scm/9ac47f795 \
+  && curl -f -s -L -o client-tools/scm/9ac47f795/scm https://app.harness.io/public/shared/tools/scm/release/9ac47f795/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
   && mkdir -m 777 -p client-tools/kubelogin/v0.1.1 \
   && curl -f -s -L -o client-tools/kubelogin/v0.1.1/kubelogin https://app.harness.io/public/shared/tools/kubelogin/release/v0.1.1/bin/linux/$TARGETARCH/kubelogin || { echo "Failed to download kubelogin"; exit 1; } \
   && mkdir -m 777 -p client-tools/harness-credentials-plugin/v0.1.0 \
