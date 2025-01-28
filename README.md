@@ -13,7 +13,7 @@ Use `Dockerfile` to create the delegate image with tools. This image includes th
   - `helm` v2.13.1 
   - `helm` v3.1.2
   - `helm` v3.8.0 
-  - `go-template` v0.4.2 
+  - `go-template` v0.4.7 
   - `harness-pywinrm` v0.4-dev 
   - `chartmuseum` v0.15.0 
   - `tf-config-inspect` v1.2
