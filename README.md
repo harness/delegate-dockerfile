@@ -9,16 +9,13 @@ The repository includes the following versions of the delegate Dockerfile. Pleas
 
 Use `Dockerfile` to create the delegate image with tools. This image includes the following tools by default.
 
-  - `kubectl` v1.24.3
-  - `helm` v2.13.1 
-  - `helm` v3.1.2
-  - `helm` v3.8.0 
-  - `go-template` v0.4.2 
+  - `kubectl` v1.28.7
+  - `helm` v3.13.3
+  - `go-template` v0.4.5 
   - `harness-pywinrm` v0.4-dev 
   - `chartmuseum` v0.15.0 
   - `tf-config-inspect` v1.2
-  - `oc` v4.2.16
-  - `kustomize` v4.5.4
+  - `oc` v4.15.25
   - `scm`
 
 ## Dockerfile-minimal
