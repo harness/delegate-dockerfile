@@ -75,6 +75,7 @@ echo "pollForTasks: ${POLL_FOR_TASKS:-false}" >> config.yml
 echo "grpcServiceEnabled: ${GRPC_SERVICE_ENABLED:-false}" >> config.yml
 echo "grpcServiceConnectorPort: ${GRPC_SERVICE_CONNECTOR_PORT:-8080}" >> config.yml
 echo "doUpgrade: false" >> config.yml
+echo "dynamicHandlingOfRequestEnabled: ${DYNAMIC_REQUEST_HANDLING:-false}" >> config.yml
 
 append_config "clientToolsDownloadDisabled" $CLIENT_TOOLS_DOWNLOAD_DISABLED
 append_config "installClientToolsInBackground" $INSTALL_CLIENT_TOOLS_IN_BACKGROUND
