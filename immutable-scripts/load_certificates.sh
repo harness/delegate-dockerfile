@@ -5,6 +5,19 @@
 # https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
 set +e
 
+# Set up keytool options based on truststore type
+setup_keytool_options() {
+  # Initialize variables for keytool options
+  KEYTOOL_OPTS=""
+  TRUST_STORE_FILE=$JAVA_HOME/lib/security/cacerts
+  # Check if BCFKS truststore file exists
+  if [ -f "$JAVA_HOME/lib/security/cacerts-bcfks" ]; then
+    echo "Using BCFKS truststore with Bouncy Castle FIPS provider"
+    TRUST_STORE_FILE=$JAVA_HOME/lib/security/cacerts-bcfks
+    KEYTOOL_OPTS="-storetype BCFKS -providerclass org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider -providerpath /usr/share/java/bc-fips/bc-fips.jar -providername BCFIPS"
+  fi
+}
+
 function import_pem_file() {
   local PEM_FILE_PATH=$1
   local NUM_CERTS=$2
@@ -18,14 +31,14 @@ function import_pem_file() {
     ALIAS="$(basename $PEM_FILE_PATH)-$N"
     cat $PEM_FILE_PATH | \
      awk "n==$N&&inzone==1 { print }; /END CERTIFICATE/ { inzone=0; n++ };/BEGIN CERTIFICATE/ { if(n==$N) print; inzone=1; }" | tee "$SHARED_CA_CERTS_PATH/$ALIAS.pem" | \
-     keytool -noprompt -importcert -trustcacerts -alias $ALIAS -keystore $TRUST_STORE_FILE -storepass $PASSWORD
+     keytool -noprompt -importcert -trustcacerts -alias $ALIAS -keystore $TRUST_STORE_FILE -storepass $PASSWORD $KEYTOOL_OPTS
   done
 }
 
 function import_der_file() {
   local DER_FILE_PATH=$1
   local ALIAS="$(basename $DER_FILE_PATH)"
-  keytool -noprompt -importcert -trustcacerts -alias $ALIAS -file $DER_FILE_PATH -keystore $TRUST_STORE_FILE -storepass $PASSWORD
+  keytool -noprompt -importcert -trustcacerts -alias $ALIAS -file $DER_FILE_PATH -keystore $TRUST_STORE_FILE -storepass $PASSWORD $KEYTOOL_OPTS
 }
 
 CA_CERTS_DIR=$1
@@ -65,8 +78,8 @@ else
   echo "Please run the delegate as root to update the system trust store."
 fi
 
-# Import custom certificates to java truststore file
-TRUST_STORE_FILE=$JAVA_HOME/lib/security/cacerts
+# Setup keytool options based on the selected truststore
+setup_keytool_options
 
 # In case, people can still use this script as it'd be a useful tool
 # to unblock customers in older versions of delegate
@@ -100,4 +113,3 @@ for FILE in $CA_CERTS_DIR/*; do
     import_der_file "$FILE"
   fi
 done;
-
