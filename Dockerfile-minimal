@@ -64,7 +64,7 @@ ENV PATH="$JAVA_HOME/bin/jattach:${PATH}"
 # Run the download-bc.sh script during build time
 RUN /opt/harness-delegate/download-bc.sh
 
-RUN curl -s -L -o delegate.jar $BASEURL/$DELEGATEVERSION/delegate.jar
+RUN curl -s -L -o delegate.jar $BASEURL/$DELEGATEVERSION/delegate.jar && [ $(stat -c%s delegate.jar) -ge 104857600 ] || (echo "Failed to download delegate.jar or delegate.jar is corrupted" && exit 1)
 
 USER 1001
 
