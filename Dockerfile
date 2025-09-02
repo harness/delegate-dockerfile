@@ -34,7 +34,7 @@ COPY fips-scripts /opt/harness-delegate/
 
 WORKDIR /opt/harness-delegate
 
-COPY --from=eclipse-temurin:17.0.13_11-jre-ubi9-minimal /opt/java/openjdk/ /opt/java/openjdk/
+COPY --from=eclipse-temurin:17.0.14_7-jre-ubi9-minimal /opt/java/openjdk/ /opt/java/openjdk/
 
 ENV LANG=en_US.UTF-8
 ENV HOME=/opt/harness-delegate
@@ -67,8 +67,8 @@ RUN set -o pipefail \
   && curl -f -s -L -o client-tools/tf-config-inspect/v1.3/terraform-config-inspect https://app.harness.io/public/shared/tools/terraform-config-inspect/release/v1.3/bin/linux/$TARGETARCH/terraform-config-inspect || { echo "Failed to download terraform-config-inspect"; exit 1; } \
   && mkdir -m 777 -p client-tools/oc/v4.17.30 \
   && curl -f -s -L -o client-tools/oc/v4.17.30/oc https://app.harness.io/public/shared/tools/oc/release/v4.17.30/bin/linux/$TARGETARCH/oc || { echo "Failed to download oc"; exit 1; } \
-  && mkdir -m 777 -p client-tools/scm/78ecffea3 \
-  && curl -f -s -L -o client-tools/scm/78ecffea3/scm https://app.harness.io/public/shared/tools/scm/release/78ecffea3/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
+  && mkdir -m 777 -p client-tools/scm/90f3b724a \
+  && curl -f -s -L -o client-tools/scm/90f3b724a/scm https://app.harness.io/public/shared/tools/scm/release/90f3b724a/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
   && mkdir -m 777 -p client-tools/kubelogin/v0.1.9 \
   && curl -f -s -L -o client-tools/kubelogin/v0.1.9/kubelogin https://app.harness.io/public/shared/tools/kubelogin/release/v0.1.9/bin/linux/$TARGETARCH/kubelogin || { echo "Failed to download kubelogin"; exit 1; } \
   && mkdir -m 777 -p client-tools/harness-credentials-plugin/v0.1.1 \
