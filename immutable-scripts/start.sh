@@ -86,6 +86,7 @@ append_config "grpcAuthorityModificationDisabled" ${GRPC_AUTHORITY_MODIFICATION_
 append_config "trustAllCertificates" ${TRUST_ALL_CERTIFICATES:-false}
 append_config "workingDir" ${WORKING_DIR:-/opt/harness-delegate/}
 append_config "sidecarMode" ${SIDECAR_MODE:-false}
+append_config "proxyTlsConnect" ${PROXY_TLS_CONNECT:-false}
 
 # 3. load custom certificates
 TRUST_STORE_FILE=""
