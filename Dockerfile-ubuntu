@@ -3,6 +3,16 @@
 # that can be found in the licenses directory at the root of this repository, also available at
 # https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
 
+FROM curlimages/curl:7.76.1 AS delegate-jar-downloader
+
+ARG BASEURL=https://app.harness.io/public/shared/delegates
+ARG DELEGATEVERSION
+
+WORKDIR /downloads
+
+RUN curl -s -L -o delegate.jar $BASEURL/$DELEGATEVERSION/delegate.jar && [ $(stat -c%s delegate.jar) -ge 104857600 ] || (echo "Failed to download delegate.jar or delegate.jar is corrupted" && exit 1)
+
+
 FROM ubuntu:20.04
 
 LABEL name="harness/delegate" \
@@ -41,8 +51,6 @@ ENV PATH="$JAVA_HOME/bin:${PATH}"
 
 ARG TARGETARCH
 ENV TARGETARCH=${TARGETARCH:-amd64}
-ARG BASEURL=https://app.harness.io/public/shared/delegates
-ARG DELEGATEVERSION
 ARG FIPS_ENABLED
 ENV FIPS_ENABLED=${FIPS_ENABLED:-false}
 
@@ -90,7 +98,7 @@ ENV PATH=/opt/harness-delegate/client-tools/harness-credentials-plugin/v0.1.1/:$
 # Run the download-bc.sh script during build time
 RUN /opt/harness-delegate/download-bc.sh
 
-RUN curl -s -L -o delegate.jar $BASEURL/$DELEGATEVERSION/delegate.jar && [ $(stat -c%s delegate.jar) -ge 104857600 ] || (echo "Failed to download delegate.jar or delegate.jar is corrupted" && exit 1)
+COPY --from=delegate-jar-downloader /downloads/delegate.jar /opt/harness-delegate/delegate.jar
 
 USER 1001
 
