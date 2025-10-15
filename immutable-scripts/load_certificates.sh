@@ -9,12 +9,30 @@ set +e
 setup_keytool_options() {
   # Initialize variables for keytool options
   KEYTOOL_OPTS=""
-  TRUST_STORE_FILE=$JAVA_HOME/lib/security/cacerts
+  ORIGINAL_TRUST_STORE_FILE=$JAVA_HOME/lib/security/cacerts
+  
   # Check if BCFKS truststore file exists
   if [ -f "$JAVA_HOME/lib/security/cacerts-bcfks" ]; then
     echo "Using BCFKS truststore with Bouncy Castle FIPS provider"
-    TRUST_STORE_FILE=$JAVA_HOME/lib/security/cacerts-bcfks
+    ORIGINAL_TRUST_STORE_FILE=$JAVA_HOME/lib/security/cacerts-bcfks
     KEYTOOL_OPTS="-storetype BCFKS -providerclass org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider -providerpath /usr/share/java/bc-fips/bc-fips.jar -providername BCFIPS"
+  fi
+  
+  # Check if custom certificates directory exists and has files
+  if [ -d "$CA_CERTS_DIR" ] && [ -n "$(ls -A -- "$CA_CERTS_DIR")" ]; then
+    if [ "$WORKING_DIR" != "/opt/harness-delegate/" ]; then
+      echo "Custom certificates found, creating writable truststore copy for custom working directory"
+      TRUST_STORE_FILE="$WORKING_DIR/custom-truststore"
+      cp "$ORIGINAL_TRUST_STORE_FILE" "$TRUST_STORE_FILE"
+      chmod 644 "$TRUST_STORE_FILE"
+      echo "Created writable truststore at $TRUST_STORE_FILE with existing system certificates"
+    else
+      echo "Using original truststore in default working directory"
+      TRUST_STORE_FILE=$ORIGINAL_TRUST_STORE_FILE
+    fi
+  else
+    echo "No custom certificates found, using original truststore"
+    TRUST_STORE_FILE=$ORIGINAL_TRUST_STORE_FILE
   fi
 }
 

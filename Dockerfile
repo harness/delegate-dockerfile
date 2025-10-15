@@ -59,8 +59,8 @@ ARG FIPS_ENABLED
 ENV FIPS_ENABLED=${FIPS_ENABLED:-false}
 
 RUN set -o pipefail \
-  && mkdir -m 777 -p client-tools/kubectl/v1.28.7 \
-  && curl -f -s -L -o client-tools/kubectl/v1.28.7/kubectl https://app.harness.io/public/shared/tools/kubectl/release/v1.28.7/bin/linux/$TARGETARCH/kubectl || { echo "Failed to download kubectl"; exit 1; } \
+  && mkdir -m 777 -p client-tools/kubectl/v1.33.5 \
+  && curl -f -s -L -o client-tools/kubectl/v1.33.5/kubectl https://app.harness.io/public/shared/tools/kubectl/release/v1.33.5/bin/linux/$TARGETARCH/kubectl || { echo "Failed to download kubectl"; exit 1; } \
   && mkdir -m 777 -p client-tools/helm/v3.13.3 \
   && curl -f -s -L -o client-tools/helm/v3.13.3/helm https://app.harness.io/public/shared/tools/helm/release/v3.13.3/bin/linux/$TARGETARCH/helm || { echo "Failed to download helm"; exit 1; } \
   && mkdir -m 777 -p client-tools/harness-helm-post-renderer/v0.1.5 \
@@ -89,7 +89,7 @@ RUN set -o pipefail \
   && chown -R 1001 $JAVA_HOME/lib/security/cacerts
 
 ENV PATH="$JAVA_HOME/bin/jattach:${PATH}"
-ENV PATH=/opt/harness-delegate/client-tools/kubectl/v1.28.7/:$PATH
+ENV PATH=/opt/harness-delegate/client-tools/kubectl/v1.33.5/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/go-template/v0.4.9/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/chartmuseum/v0.16.3/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/tf-config-inspect/v1.3/:$PATH
