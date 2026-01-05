@@ -72,8 +72,8 @@ RUN mkdir -m 777 -p client-tools/kubectl/v1.33.5 \
   && curl -f -s -L -o client-tools/tf-config-inspect/v1.3/terraform-config-inspect https://app.harness.io/public/shared/tools/terraform-config-inspect/release/v1.3/bin/linux/$TARGETARCH/terraform-config-inspect || { echo "Failed to download terraform-config-inspect"; exit 1; } \
   && mkdir -m 777 -p client-tools/oc/v4.17.30 \
   && curl -f -s -L -o client-tools/oc/v4.17.30/oc https://app.harness.io/public/shared/tools/oc/release/v4.17.30/bin/linux/$TARGETARCH/oc || { echo "Failed to download oc"; exit 1; } \
-  && mkdir -m 777 -p client-tools/scm/c3c7406b3 \
-  && curl -f -s -L -o client-tools/scm/c3c7406b3/scm https://app.harness.io/public/shared/tools/scm/release/c3c7406b3/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
+  && mkdir -m 777 -p client-tools/scm/079a7a785 \
+  && curl -f -s -L -o client-tools/scm/079a7a785/scm https://app.harness.io/public/shared/tools/scm/release/079a7a785/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
   && mkdir -m 777 -p client-tools/kubelogin/v0.1.9 \
   && curl -f -s -L -o client-tools/kubelogin/v0.1.9/kubelogin https://app.harness.io/public/shared/tools/kubelogin/release/v0.1.9/bin/linux/$TARGETARCH/kubelogin || { echo "Failed to download kubelogin"; exit 1; } \
   && mkdir -m 777 -p client-tools/harness-credentials-plugin/v0.1.1 \
