@@ -44,7 +44,7 @@ COPY fips-scripts /opt/harness-delegate/
 
 WORKDIR /opt/harness-delegate
 
-COPY --from=eclipse-temurin:17.0.14_7-jre-ubi9-minimal /opt/java/openjdk/ /opt/java/openjdk/
+COPY --from=eclipse-temurin:17.0.17_10-jre-ubi9-minimal /opt/java/openjdk/ /opt/java/openjdk/
 
 ENV LANG=en_US.UTF-8
 ENV HOME=/opt/harness-delegate
@@ -52,6 +52,7 @@ ENV CLIENT_TOOLS_DOWNLOAD_DISABLED=true
 ENV INSTALL_CLIENT_TOOLS_IN_BACKGROUND=true
 ENV JAVA_HOME=/opt/java/openjdk
 ENV PATH="$JAVA_HOME/bin:${PATH}"
+ENV DELEGATE_HTTP_PORT=${DELEGATE_HTTP_PORT:-3460}
 
 ARG TARGETARCH
 ENV TARGETARCH=${TARGETARCH:-amd64}
@@ -109,6 +110,6 @@ COPY --from=delegate-jar-downloader /downloads/delegate.jar /opt/harness-delegat
 
 USER 1001
 
-HEALTHCHECK --interval=10s --timeout=1s --start-period=10s --retries=3 CMD curl --fail http://localhost:3460/api/health
+HEALTHCHECK --interval=10s --timeout=1s --start-period=10s --retries=3 CMD curl --fail http://localhost:${DELEGATE_HTTP_PORT:-3460}/api/health
 ENTRYPOINT ["./setup-bc.sh"]
 CMD [ "./start.sh" ]

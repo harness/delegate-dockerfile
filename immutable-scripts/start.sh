@@ -53,6 +53,9 @@ if [ ! -e config.yml ]; then
   cp /opt/harness-delegate/config.yml .
 fi
 
+DELEGATE_HTTP_PORT=${DELEGATE_HTTP_PORT:-3460}
+sed -i.bak "s/port: 3460/port: $DELEGATE_HTTP_PORT/" config.yml
+
 echo "accountId: $ACCOUNT_ID" >> config.yml
 if [ ! -e $DELEGATE_TOKEN ]; then
   echo "delegateToken: $DELEGATE_TOKEN" >> config.yml
