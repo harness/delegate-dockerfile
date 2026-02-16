@@ -3,80 +3,81 @@
 # that can be found in the licenses directory at the root of this repository, also available at
 # https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
 
-FROM curlimages/curl:7.76.1 AS delegate-jar-downloader
+FROM curlimages/curl:7.76.1 AS downloader
 
 ARG BASEURL=https://app.harness.io/public/shared/delegates
 ARG DELEGATEVERSION
+ARG TARGETARCH=amd64
 
 WORKDIR /downloads
 
-RUN curl -s -L -o delegate.jar $BASEURL/$DELEGATEVERSION/delegate.jar && [ $(stat -c%s delegate.jar) -ge 104857600 ] || (echo "Failed to download delegate.jar or delegate.jar is corrupted" && exit 1)
+# Delegate JAR
+RUN curl -s -L -o delegate.jar \
+    $BASEURL/$DELEGATEVERSION/delegate.jar \
+ && [ "$(stat -c%s delegate.jar)" -ge 104857600 ] \
+ || (echo "Failed to download delegate.jar or delegate.jar is corrupted" && exit 1)
+
+# Client tools
+RUN set -eux; \
+  mkdir -p client-tools; \
+  \
+  mkdir -p client-tools/scm/079a7a785 && \
+  curl -f -s -L -o client-tools/scm/079a7a785/scm \
+    https://app.harness.io/public/shared/tools/scm/release/079a7a785/bin/linux/$TARGETARCH/scm; \
+  \
+  mkdir -p client-tools/hcli/68e8ada && \
+  curl -f -s -L -o client-tools/hcli/68e8ada/hcli \
+    https://app.harness.io/public/shared/tools/hcli/release/68e8ada/bin/linux/$TARGETARCH/hcli; \
+  \
+  curl -f -s -L -o jattach \
+    https://app.harness.io/public/shared/tools/jattach/release/v2.2/bin/linux/$TARGETARCH/jattach; \
+  \
+  chmod +x client-tools/**/** jattach
 
 
-FROM redhat/ubi9-minimal:9.4
+# -------------------------------
+# Stage 2: Runtime image
+# -------------------------------
+FROM registry.redhat.io/ubi9/ubi-stig:9.7
 
 LABEL name="harness/delegate-minimal" \
       vendor="Harness" \
       maintainer="Harness"
 
-RUN echo -e '#!/bin/sh\nexec /usr/bin/microdnf -y "$@"' > /usr/local/bin/microdnf \
-  && chmod +x /usr/local/bin/microdnf
-
-RUN microdnf update --nodocs --setopt=install_weak_deps=0 \
-  && microdnf install --nodocs \
-    procps \
-    hostname \
-    lsof \
-    findutils \
-    tar \
-    gzip \
-    shadow-utils \
-    glibc-langpack-en \
-  && useradd -u 1001 -g 0 harness \
-  && microdnf remove shadow-utils \
-  && microdnf clean all \
-  && rm -rf /var/cache/yum \
-  && mkdir -p /opt/harness-delegate/
-
+RUN useradd -u 1001 -g 0 harness \
+ && mkdir -p /opt/harness-delegate
 
 COPY immutable-scripts /opt/harness-delegate/
 COPY fips-scripts /opt/harness-delegate/
 
 WORKDIR /opt/harness-delegate
 
-ARG TARGETARCH
 ENV TARGETARCH=${TARGETARCH:-amd64}
 ARG FIPS_ENABLED
 ENV FIPS_ENABLED=${FIPS_ENABLED:-false}
 
 COPY --from=eclipse-temurin:17.0.17_10-jre-ubi9-minimal /opt/java/openjdk/ /opt/java/openjdk/
-ENV JAVA_HOME=/opt/java/openjdk
 
-RUN set -o pipefail \
-  && mkdir -m 777 -p client-tools/scm/079a7a785 \
-  && curl -f -s -L -o client-tools/scm/079a7a785/scm https://app.harness.io/public/shared/tools/scm/release/079a7a785/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
-  && curl -f -s -L -o $JAVA_HOME/bin/jattach https://app.harness.io/public/shared/tools/jattach/release/v2.2/bin/linux/$TARGETARCH/jattach || { echo "Failed to download jattach"; exit 1; } \
-  && chmod +x $JAVA_HOME/bin/jattach \
-  && mkdir -m 777 -p client-tools/hcli/68e8ada \
-  && curl -f -s -L -o client-tools/hcli/68e8ada/hcli https://app.harness.io/public/shared/tools/hcli/release/68e8ada/bin/linux/$TARGETARCH/hcli \
-  && chmod -R 775 /opt/harness-delegate \
-  && chgrp -R 0 /opt/harness-delegate \
-  && chown -R 1001 /opt/harness-delegate \
-  && chown -R 1001 $JAVA_HOME/lib/security/cacerts
+# Copy downloaded artifacts
+COPY --from=downloader /downloads/delegate.jar /opt/harness-delegate/delegate.jar
+COPY --from=downloader /downloads/client-tools /opt/harness-delegate/client-tools
+COPY --from=downloader /downloads/jattach /opt/java/openjdk/bin/jattach
+
+RUN chmod -R 775 /opt/harness-delegate \
+ && chgrp -R 0 /opt/harness-delegate \
+ && chown -R 1001 /opt/harness-delegate \
+ && chown -R 1001 /opt/java/openjdk/lib/security/cacerts
+
 
 ENV LANG=en_US.UTF-8
 ENV HOME=/opt/harness-delegate
 ENV CLIENT_TOOLS_DOWNLOAD_DISABLED=true
-ENV INSTALL_CLIENT_TOOLS_IN_BACKGROUND=true
-ENV PATH="$JAVA_HOME/bin:${PATH}"
-ENV PATH="$JAVA_HOME/bin/jattach:${PATH}"
-ENV PATH=/opt/harness-delegate/client-tools/hcli/68e8ada/:$PATH
+ENV JAVA_HOME=/opt/java/openjdk
+ENV PATH="$JAVA_HOME/bin/jattach:$JAVA_HOME/bin:${PATH}"
 ENV DELEGATE_HTTP_PORT=${DELEGATE_HTTP_PORT:-3460}
 
 # Run the download-bc.sh script during build time
 RUN /opt/harness-delegate/download-bc.sh
-
-COPY --from=delegate-jar-downloader /downloads/delegate.jar /opt/harness-delegate/delegate.jar
 
 USER 1001
 
