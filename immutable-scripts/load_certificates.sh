@@ -91,7 +91,7 @@ else
 fi
 
 if [ `id -u` -eq 0 ]; then
-  update-ca-trust enable
+  update-ca-trust extract
 else
   echo "Please run the delegate as root to update the system trust store."
 fi

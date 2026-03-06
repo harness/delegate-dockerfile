@@ -13,7 +13,7 @@ WORKDIR /downloads
 RUN curl -s -L -o delegate.jar $BASEURL/$DELEGATEVERSION/delegate.jar && [ $(stat -c%s delegate.jar) -ge 104857600 ] || (echo "Failed to download delegate.jar or delegate.jar is corrupted" && exit 1)
 
 
-FROM redhat/ubi9-minimal:9.4
+FROM redhat/ubi9-minimal:9.7
 
 LABEL name="harness/delegate-minimal" \
       vendor="Harness" \
@@ -22,8 +22,8 @@ LABEL name="harness/delegate-minimal" \
 RUN echo -e '#!/bin/sh\nexec /usr/bin/microdnf -y "$@"' > /usr/local/bin/microdnf \
   && chmod +x /usr/local/bin/microdnf
 
-RUN microdnf update --nodocs --setopt=install_weak_deps=0 \
-  && microdnf install --nodocs \
+RUN microdnf update --nodocs --setopt=install_weak_deps=0 --nobest \
+  && microdnf install --nodocs --nobest \
     procps \
     hostname \
     lsof \
@@ -49,16 +49,16 @@ ENV TARGETARCH=${TARGETARCH:-amd64}
 ARG FIPS_ENABLED
 ENV FIPS_ENABLED=${FIPS_ENABLED:-false}
 
-COPY --from=eclipse-temurin:17.0.17_10-jre-ubi9-minimal /opt/java/openjdk/ /opt/java/openjdk/
+COPY --from=eclipse-temurin:17.0.18_8-jre-ubi9-minimal /opt/java/openjdk/ /opt/java/openjdk/
 ENV JAVA_HOME=/opt/java/openjdk
 
 RUN set -o pipefail \
-  && mkdir -m 777 -p client-tools/scm/079a7a785 \
-  && curl -f -s -L -o client-tools/scm/079a7a785/scm https://app.harness.io/public/shared/tools/scm/release/079a7a785/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
+  && mkdir -m 777 -p client-tools/scm/d352c327d \
+  && curl -f -s -L -o client-tools/scm/d352c327d/scm https://app.harness.io/public/shared/tools/scm/release/d352c327d/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
   && curl -f -s -L -o $JAVA_HOME/bin/jattach https://app.harness.io/public/shared/tools/jattach/release/v2.2/bin/linux/$TARGETARCH/jattach || { echo "Failed to download jattach"; exit 1; } \
   && chmod +x $JAVA_HOME/bin/jattach \
-  && mkdir -m 777 -p client-tools/hcli/68e8ada \
-  && curl -f -s -L -o client-tools/hcli/68e8ada/hcli https://app.harness.io/public/shared/tools/hcli/release/68e8ada/bin/linux/$TARGETARCH/hcli \
+  && mkdir -m 777 -p client-tools/hcli/latest \
+  && curl -f -s -L -o client-tools/hcli/latest/hcli https://app.harness.io/storage/harness-download/harness-ti/hcli/latest/hcli-linux-$TARGETARCH \
   && chmod -R 775 /opt/harness-delegate \
   && chgrp -R 0 /opt/harness-delegate \
   && chown -R 1001 /opt/harness-delegate \
@@ -70,7 +70,7 @@ ENV CLIENT_TOOLS_DOWNLOAD_DISABLED=true
 ENV INSTALL_CLIENT_TOOLS_IN_BACKGROUND=true
 ENV PATH="$JAVA_HOME/bin:${PATH}"
 ENV PATH="$JAVA_HOME/bin/jattach:${PATH}"
-ENV PATH=/opt/harness-delegate/client-tools/hcli/68e8ada/:$PATH
+ENV PATH=/opt/harness-delegate/client-tools/hcli/latest/:$PATH
 ENV DELEGATE_HTTP_PORT=${DELEGATE_HTTP_PORT:-3460}
 
 # Run the download-bc.sh script during build time
