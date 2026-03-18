@@ -80,6 +80,7 @@ echo "grpcServiceConnectorPort: ${GRPC_SERVICE_CONNECTOR_PORT:-8080}" >> config.
 echo "doUpgrade: false" >> config.yml
 echo "dynamicHandlingOfRequestEnabled: ${DYNAMIC_REQUEST_HANDLING:-false}" >> config.yml
 
+append_config "description" $DELEGATE_DESCRIPTION
 append_config "clientToolsDownloadDisabled" $CLIENT_TOOLS_DOWNLOAD_DISABLED
 append_config "installClientToolsInBackground" $INSTALL_CLIENT_TOOLS_IN_BACKGROUND
 append_config "clientCertificateFilePath" $DELEGATE_CLIENT_CERTIFICATE_PATH
@@ -91,6 +92,12 @@ append_config "workingDir" ${WORKING_DIR:-/opt/harness-delegate/}
 append_config "sidecarMode" ${SIDECAR_MODE:-false}
 append_config "proxyTlsConnect" ${PROXY_TLS_CONNECT:-false}
 append_config "customShell" ${DELEGATE_SHELL:-}
+
+# Zero Trust Service Configuration
+append_config "ztsUrl" $ZTS_URL
+append_config "ztsTimeoutSeconds" ${ZTS_TIMEOUT_SECONDS:-5}
+append_config "ztsRetryCount" ${ZTS_RETRY_COUNT:-2}
+append_config "ztsEnforce" ${ZTS_ENFORCE:-true}
 
 # 3. load custom certificates
 TRUST_STORE_FILE=""

@@ -66,8 +66,8 @@ RUN set -o pipefail \
   && curl -f -s -L -o client-tools/helm/v3.13.3/helm https://app.harness.io/public/shared/tools/helm/release/v3.13.3/bin/linux/$TARGETARCH/helm || { echo "Failed to download helm"; exit 1; } \
   && mkdir -m 777 -p client-tools/harness-helm-post-renderer/v0.1.7 \
   && curl -f -s -L -o client-tools/harness-helm-post-renderer/v0.1.7/harness-helm-post-renderer https://app.harness.io/public/shared/tools/harness-helm-post-renderer/release/v0.1.7/bin/linux/$TARGETARCH/harness-helm-post-renderer || { echo "Failed to download harness-helm-post-renderer"; exit 1; } \
-  && mkdir -m 777 -p client-tools/go-template/v0.4.11 \
-  && curl -f -s -L -o client-tools/go-template/v0.4.11/go-template https://app.harness.io/public/shared/tools/go-template/release/v0.4.11/bin/linux/$TARGETARCH/go-template || { echo "Failed to download go-template"; exit 1; } \
+  && mkdir -m 777 -p client-tools/go-template/v0.4.12 \
+  && curl -f -s -L -o client-tools/go-template/v0.4.12/go-template https://app.harness.io/public/shared/tools/go-template/release/v0.4.12/bin/linux/$TARGETARCH/go-template || { echo "Failed to download go-template"; exit 1; } \
   && mkdir -m 777 -p client-tools/harness-pywinrm/v0.4-dev \
   && curl -f -s -L -o client-tools/harness-pywinrm/v0.4-dev/harness-pywinrm https://app.harness.io/public/shared/tools/harness-pywinrm/release/v0.4-dev/bin/linux/$TARGETARCH/harness-pywinrm || { echo "Failed to download harness-pywinrm"; exit 1; } \
   && mkdir -m 777 -p client-tools/chartmuseum/v0.16.3 \
@@ -93,7 +93,7 @@ RUN set -o pipefail \
 
 ENV PATH="$JAVA_HOME/bin/jattach:${PATH}"
 ENV PATH=/opt/harness-delegate/client-tools/kubectl/v1.33.5/:$PATH
-ENV PATH=/opt/harness-delegate/client-tools/go-template/v0.4.11/:$PATH
+ENV PATH=/opt/harness-delegate/client-tools/go-template/v0.4.12/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/chartmuseum/v0.16.3/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/tf-config-inspect/v1.3/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/helm/v3.13.3/:$PATH
