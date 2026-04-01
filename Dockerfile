@@ -62,8 +62,8 @@ ENV FIPS_ENABLED=${FIPS_ENABLED:-false}
 RUN set -o pipefail \
   && mkdir -m 777 -p client-tools/kubectl/v1.33.5 \
   && curl -f -s -L -o client-tools/kubectl/v1.33.5/kubectl https://app.harness.io/public/shared/tools/kubectl/release/v1.33.5/bin/linux/$TARGETARCH/kubectl || { echo "Failed to download kubectl"; exit 1; } \
-  && mkdir -m 777 -p client-tools/helm/v3.13.3 \
-  && curl -f -s -L -o client-tools/helm/v3.13.3/helm https://app.harness.io/public/shared/tools/helm/release/v3.13.3/bin/linux/$TARGETARCH/helm || { echo "Failed to download helm"; exit 1; } \
+  && mkdir -m 777 -p client-tools/helm/v3.15.4 \
+  && curl -f -s -L -o client-tools/helm/v3.15.4/helm https://app.harness.io/public/shared/tools/helm/release/v3.15.4/bin/linux/$TARGETARCH/helm || { echo "Failed to download helm"; exit 1; } \
   && mkdir -m 777 -p client-tools/harness-helm-post-renderer/v0.1.7 \
   && curl -f -s -L -o client-tools/harness-helm-post-renderer/v0.1.7/harness-helm-post-renderer https://app.harness.io/public/shared/tools/harness-helm-post-renderer/release/v0.1.7/bin/linux/$TARGETARCH/harness-helm-post-renderer || { echo "Failed to download harness-helm-post-renderer"; exit 1; } \
   && mkdir -m 777 -p client-tools/go-template/v0.4.12 \
@@ -96,7 +96,7 @@ ENV PATH=/opt/harness-delegate/client-tools/kubectl/v1.33.5/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/go-template/v0.4.12/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/chartmuseum/v0.16.3/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/tf-config-inspect/v1.3/:$PATH
-ENV PATH=/opt/harness-delegate/client-tools/helm/v3.13.3/:$PATH
+ENV PATH=/opt/harness-delegate/client-tools/helm/v3.15.4/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/harness-helm-post-renderer/v0.1.7/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/oc/v4.17.45/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/kubelogin/v0.1.9/:$PATH
