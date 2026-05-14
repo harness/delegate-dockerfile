@@ -3,7 +3,7 @@
 # that can be found in the licenses directory at the root of this repository, also available at
 # https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
 
-FROM curlimages/curl:7.76.1 AS delegate-jar-downloader
+FROM harness0.harness.io/oci/docker_artifacts/curlimages/curl:7.76.1 AS delegate-jar-downloader
 
 ARG BASEURL=https://app.harness.io/public/shared/delegates
 ARG DELEGATEVERSION
@@ -13,7 +13,7 @@ WORKDIR /downloads
 RUN curl -s -L -o delegate.jar $BASEURL/$DELEGATEVERSION/delegate.jar && [ $(stat -c%s delegate.jar) -ge 104857600 ] || (echo "Failed to download delegate.jar or delegate.jar is corrupted" && exit 1)
 
 
-FROM redhat/ubi9-minimal:9.7
+FROM harness0.harness.io/oci/docker_artifacts/redhat/ubi9-minimal:9.7
 
 LABEL name="harness/delegate" \
       vendor="Harness" \
@@ -64,20 +64,20 @@ RUN set -o pipefail \
   && curl -f -s -L -o client-tools/kubectl/v1.33.5/kubectl https://app.harness.io/public/shared/tools/kubectl/release/v1.33.5/bin/linux/$TARGETARCH/kubectl || { echo "Failed to download kubectl"; exit 1; } \
   && mkdir -m 777 -p client-tools/helm/v3.15.4 \
   && curl -f -s -L -o client-tools/helm/v3.15.4/helm https://app.harness.io/public/shared/tools/helm/release/v3.15.4/bin/linux/$TARGETARCH/helm || { echo "Failed to download helm"; exit 1; } \
-  && mkdir -m 777 -p client-tools/harness-helm-post-renderer/v0.1.7 \
-  && curl -f -s -L -o client-tools/harness-helm-post-renderer/v0.1.7/harness-helm-post-renderer https://app.harness.io/public/shared/tools/harness-helm-post-renderer/release/v0.1.7/bin/linux/$TARGETARCH/harness-helm-post-renderer || { echo "Failed to download harness-helm-post-renderer"; exit 1; } \
+  && mkdir -m 777 -p client-tools/harness-helm-post-renderer/v0.2.0 \
+  && curl -f -s -L -o client-tools/harness-helm-post-renderer/v0.2.0/harness-helm-post-renderer https://app.harness.io/public/shared/tools/harness-helm-post-renderer/release/v0.2.0/bin/linux/$TARGETARCH/harness-helm-post-renderer || { echo "Failed to download harness-helm-post-renderer"; exit 1; } \
   && mkdir -m 777 -p client-tools/go-template/v0.4.12 \
   && curl -f -s -L -o client-tools/go-template/v0.4.12/go-template https://app.harness.io/public/shared/tools/go-template/release/v0.4.12/bin/linux/$TARGETARCH/go-template || { echo "Failed to download go-template"; exit 1; } \
   && mkdir -m 777 -p client-tools/harness-pywinrm/v0.4-dev \
   && curl -f -s -L -o client-tools/harness-pywinrm/v0.4-dev/harness-pywinrm https://app.harness.io/public/shared/tools/harness-pywinrm/release/v0.4-dev/bin/linux/$TARGETARCH/harness-pywinrm || { echo "Failed to download harness-pywinrm"; exit 1; } \
-  && mkdir -m 777 -p client-tools/chartmuseum/v0.16.3 \
-  && curl -f -s -L -o client-tools/chartmuseum/v0.16.3/chartmuseum https://app.harness.io/public/shared/tools/chartmuseum/release/v0.16.3/bin/linux/$TARGETARCH/chartmuseum || { echo "Failed to download chartmuseum"; exit 1; } \
+  && mkdir -m 777 -p client-tools/chartmuseum/v0.16.5 \
+  && curl -f -s -L -o client-tools/chartmuseum/v0.16.5/chartmuseum https://app.harness.io/public/shared/tools/chartmuseum/release/v0.16.5/bin/linux/$TARGETARCH/chartmuseum || { echo "Failed to download chartmuseum"; exit 1; } \
   && mkdir -m 777 -p client-tools/tf-config-inspect/v1.3 \
   && curl -f -s -L -o client-tools/tf-config-inspect/v1.3/terraform-config-inspect https://app.harness.io/public/shared/tools/terraform-config-inspect/release/v1.3/bin/linux/$TARGETARCH/terraform-config-inspect || { echo "Failed to download terraform-config-inspect"; exit 1; } \
   && mkdir -m 777 -p client-tools/oc/v4.17.45 \
   && curl -f -s -L -o client-tools/oc/v4.17.45/oc https://app.harness.io/public/shared/tools/oc/release/v4.17.45/bin/linux/$TARGETARCH/oc || { echo "Failed to download oc"; exit 1; } \
-  && mkdir -m 777 -p client-tools/scm/d352c327d \
-  && curl -f -s -L -o client-tools/scm/d352c327d/scm https://app.harness.io/public/shared/tools/scm/release/d352c327d/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
+  && mkdir -m 777 -p client-tools/scm/2df691544 \
+  && curl -f -s -L -o client-tools/scm/2df691544/scm https://app.harness.io/public/shared/tools/scm/release/2df691544/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
   && mkdir -m 777 -p client-tools/kubelogin/v0.1.9 \
   && curl -f -s -L -o client-tools/kubelogin/v0.1.9/kubelogin https://app.harness.io/public/shared/tools/kubelogin/release/v0.1.9/bin/linux/$TARGETARCH/kubelogin || { echo "Failed to download kubelogin"; exit 1; } \
   && mkdir -m 777 -p client-tools/harness-credentials-plugin/v0.1.2 \
@@ -86,6 +86,10 @@ RUN set -o pipefail \
   && chmod +x $JAVA_HOME/bin/jattach \
   && mkdir -m 777 -p client-tools/hcli/latest \
   && curl -f -s -L -o client-tools/hcli/latest/hcli https://app.harness.io/storage/harness-download/harness-ti/hcli/latest/hcli-linux-$TARGETARCH \
+  && mkdir -m 777 -p client-tools/task-runner/1.43.0 \
+  && curl -f -s -L -o client-tools/task-runner/1.43.0/task-runner https://app.harness.io/public/shared/delegates/1.43.0/delegate-linux-$TARGETARCH || { echo "Failed to download task-runner"; exit 1; } \
+  && mkdir -m 777 -p client-tools/credential-broker/v0.0.2 \
+  && curl -f -s -L -o client-tools/credential-broker/v0.0.2/credential-broker https://app.harness.io/public/shared/tools/credential-broker/release/v0.0.2/bin/linux/$TARGETARCH/credential-broker || { echo "Failed to download credential-broker"; exit 1; } \
   && chmod -R 775 /opt/harness-delegate \
   && chgrp -R 0 /opt/harness-delegate \
   && chown -R 1001 /opt/harness-delegate \
@@ -94,14 +98,16 @@ RUN set -o pipefail \
 ENV PATH="$JAVA_HOME/bin/jattach:${PATH}"
 ENV PATH=/opt/harness-delegate/client-tools/kubectl/v1.33.5/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/go-template/v0.4.12/:$PATH
-ENV PATH=/opt/harness-delegate/client-tools/chartmuseum/v0.16.3/:$PATH
+ENV PATH=/opt/harness-delegate/client-tools/chartmuseum/v0.16.5/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/tf-config-inspect/v1.3/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/helm/v3.15.4/:$PATH
-ENV PATH=/opt/harness-delegate/client-tools/harness-helm-post-renderer/v0.1.7/:$PATH
+ENV PATH=/opt/harness-delegate/client-tools/harness-helm-post-renderer/v0.2.0/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/oc/v4.17.45/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/kubelogin/v0.1.9/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/harness-credentials-plugin/v0.1.2/:$PATH
 ENV PATH=/opt/harness-delegate/client-tools/hcli/latest/:$PATH
+ENV PATH=/opt/harness-delegate/client-tools/task-runner/1.43.0/:$PATH
+ENV PATH=/opt/harness-delegate/client-tools/credential-broker/v0.0.2/:$PATH
 
 # Run the download-bc.sh script during build time
 RUN /opt/harness-delegate/download-bc.sh

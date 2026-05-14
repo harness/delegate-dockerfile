@@ -12,7 +12,6 @@ WORKDIR /downloads
 
 RUN curl -s -L -o delegate.jar $BASEURL/$DELEGATEVERSION/delegate.jar && [ $(stat -c%s delegate.jar) -ge 104857600 ] || (echo "Failed to download delegate.jar or delegate.jar is corrupted" && exit 1)
 
-
 FROM redhat/ubi9-minimal:9.7
 
 LABEL name="harness/delegate-minimal" \
@@ -38,7 +37,6 @@ RUN microdnf update --nodocs --setopt=install_weak_deps=0 --nobest \
   && rm -rf /var/cache/yum \
   && mkdir -p /opt/harness-delegate/
 
-
 COPY immutable-scripts /opt/harness-delegate/
 COPY fips-scripts /opt/harness-delegate/
 
@@ -53,12 +51,14 @@ COPY --from=eclipse-temurin:17.0.18_8-jre-ubi9-minimal /opt/java/openjdk/ /opt/j
 ENV JAVA_HOME=/opt/java/openjdk
 
 RUN set -o pipefail \
-  && mkdir -m 777 -p client-tools/scm/d352c327d \
-  && curl -f -s -L -o client-tools/scm/d352c327d/scm https://app.harness.io/public/shared/tools/scm/release/d352c327d/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
+  && mkdir -m 777 -p client-tools/scm/2df691544 \
+  && curl -f -s -L -o client-tools/scm/2df691544/scm https://app.harness.io/public/shared/tools/scm/release/2df691544/bin/linux/$TARGETARCH/scm || { echo "Failed to download scm"; exit 1; } \
   && curl -f -s -L -o $JAVA_HOME/bin/jattach https://app.harness.io/public/shared/tools/jattach/release/v2.2/bin/linux/$TARGETARCH/jattach || { echo "Failed to download jattach"; exit 1; } \
   && chmod +x $JAVA_HOME/bin/jattach \
   && mkdir -m 777 -p client-tools/hcli/latest \
   && curl -f -s -L -o client-tools/hcli/latest/hcli https://app.harness.io/storage/harness-download/harness-ti/hcli/latest/hcli-linux-$TARGETARCH \
+  && mkdir -m 777 -p client-tools/task-runner/1.43.0 \
+  && curl -f -s -L -o client-tools/task-runner/1.43.0/task-runner https://app.harness.io/public/shared/delegates/1.43.0/delegate-linux-$TARGETARCH || { echo "Failed to download task-runner"; exit 1; } \
   && chmod -R 775 /opt/harness-delegate \
   && chgrp -R 0 /opt/harness-delegate \
   && chown -R 1001 /opt/harness-delegate \
@@ -71,6 +71,7 @@ ENV INSTALL_CLIENT_TOOLS_IN_BACKGROUND=true
 ENV PATH="$JAVA_HOME/bin:${PATH}"
 ENV PATH="$JAVA_HOME/bin/jattach:${PATH}"
 ENV PATH=/opt/harness-delegate/client-tools/hcli/latest/:$PATH
+ENV PATH=/opt/harness-delegate/client-tools/task-runner/1.43.0/:$PATH
 ENV DELEGATE_HTTP_PORT=${DELEGATE_HTTP_PORT:-3460}
 
 # Run the download-bc.sh script during build time

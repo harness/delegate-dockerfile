@@ -39,8 +39,8 @@ else
     echo "Non FIPS mode enabled, configuring environment..."
     mkdir -p /usr/share/java/bc/
     # Download BC libs
-    curl -L -o /usr/share/java/bc/bcpg-jdk18on.jar https://repo1.maven.org/maven2/org/bouncycastle/bcpg-jdk18on/1.80/bcpg-jdk18on-1.80.jar
-    curl -L -o /usr/share/java/bc/bcpkix-jdk18on.jar https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.80/bcpkix-jdk18on-1.80.jar
-    curl -L -o /usr/share/java/bc/bcprov-jdk18on.jar https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.80/bcprov-jdk18on-1.80.jar
-    curl -L -o /usr/share/java/bc/bcutil-jdk18on.jar https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.80/bcutil-jdk18on-1.80.jar
+    curl -L -o /usr/share/java/bc/bcpg-jdk18on.jar https://repo1.maven.org/maven2/org/bouncycastle/bcpg-jdk18on/1.84/bcpg-jdk18on-1.84.jar
+    curl -L -o /usr/share/java/bc/bcpkix-jdk18on.jar https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.84/bcpkix-jdk18on-1.84.jar
+    curl -L -o /usr/share/java/bc/bcprov-jdk18on.jar https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.84/bcprov-jdk18on-1.84.jar
+    curl -L -o /usr/share/java/bc/bcutil-jdk18on.jar https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.84/bcutil-jdk18on-1.84.jar
 fi
