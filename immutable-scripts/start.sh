@@ -80,7 +80,7 @@ echo "grpcServiceConnectorPort: ${GRPC_SERVICE_CONNECTOR_PORT:-8080}" >> config.
 echo "doUpgrade: false" >> config.yml
 echo "dynamicHandlingOfRequestEnabled: ${DYNAMIC_REQUEST_HANDLING:-false}" >> config.yml
 
-append_config "description" $DELEGATE_DESCRIPTION
+append_config "description" "$DELEGATE_DESCRIPTION"
 append_config "clientToolsDownloadDisabled" $CLIENT_TOOLS_DOWNLOAD_DISABLED
 append_config "installClientToolsInBackground" $INSTALL_CLIENT_TOOLS_IN_BACKGROUND
 append_config "clientCertificateFilePath" $DELEGATE_CLIENT_CERTIFICATE_PATH
