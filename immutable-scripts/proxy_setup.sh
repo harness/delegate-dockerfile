@@ -41,17 +41,33 @@ fi
 
 if [[ $PROXY_HOST != "" ]]; then
   echo "Using $PROXY_SCHEME proxy $PROXY_HOST:$PROXY_PORT"
-  if [[ $PROXY_USER != "" ]]; then
+  if [[ $PROXY_AUTH_TYPE == "KERBEROS" ]]; then
+    echo "Using Kerberos proxy authentication"
+    if [[ -z "$KRB5_CONFIG" ]]; then
+      echo "ERROR: PROXY_AUTH_TYPE=KERBEROS requires KRB5_CONFIG to be set to your krb5.conf path; aborting boot."
+      exit 1
+    fi
+    if [[ -z "$KRB5_JAAS_CONFIG" || ! -s "$KRB5_JAAS_CONFIG" ]]; then
+      echo "ERROR: PROXY_AUTH_TYPE=KERBEROS requires KRB5_JAAS_CONFIG to point at a readable non-empty JAAS login config (got '$KRB5_JAAS_CONFIG'); aborting boot."
+      exit 1
+    fi
+
+    export PROXY_CURL="-x $PROXY_SCHEME://$PROXY_HOST:$PROXY_PORT --proxy-negotiate -U :"
+    export http_proxy=$PROXY_SCHEME://$PROXY_HOST:$PROXY_PORT
+    export https_proxy=$PROXY_SCHEME://$PROXY_HOST:$PROXY_PORT
+    PROXY_SYS_PROPS="-DproxyScheme=$PROXY_SCHEME -Dhttp.proxyHost=$PROXY_HOST -Dhttp.proxyPort=$PROXY_PORT -Dhttps.proxyHost=$PROXY_HOST -Dhttps.proxyPort=$PROXY_PORT -Djava.security.krb5.conf=$KRB5_CONFIG -Djava.security.auth.login.config=$KRB5_JAAS_CONFIG -Djavax.security.auth.useSubjectCredsOnly=true"
+  elif [[ $PROXY_USER != "" ]]; then
     echo "using proxy auth config"
     export PROXY_USER
     export PROXY_PASSWORD
     export PROXY_CURL="-x "$PROXY_SCHEME"://"$PROXY_USER:$(url_encode "$PROXY_PASSWORD")@$PROXY_HOST:$PROXY_PORT
+    PROXY_SYS_PROPS="-DproxyScheme=$PROXY_SCHEME -Dhttp.proxyHost=$PROXY_HOST -Dhttp.proxyPort=$PROXY_PORT -Dhttps.proxyHost=$PROXY_HOST -Dhttps.proxyPort=$PROXY_PORT"
   else
     export PROXY_CURL="-x "$PROXY_SCHEME"://"$PROXY_HOST:$PROXY_PORT
     export http_proxy=$PROXY_SCHEME://$PROXY_HOST:$PROXY_PORT
     export https_proxy=$PROXY_SCHEME://$PROXY_HOST:$PROXY_PORT
+    PROXY_SYS_PROPS="-DproxyScheme=$PROXY_SCHEME -Dhttp.proxyHost=$PROXY_HOST -Dhttp.proxyPort=$PROXY_PORT -Dhttps.proxyHost=$PROXY_HOST -Dhttps.proxyPort=$PROXY_PORT"
   fi
-  PROXY_SYS_PROPS="-DproxyScheme=$PROXY_SCHEME -Dhttp.proxyHost=$PROXY_HOST -Dhttp.proxyPort=$PROXY_PORT -Dhttps.proxyHost=$PROXY_HOST -Dhttps.proxyPort=$PROXY_PORT"
 fi
 
 if [[ $PROXY_MANAGER == "true" || $PROXY_MANAGER == "" ]]; then

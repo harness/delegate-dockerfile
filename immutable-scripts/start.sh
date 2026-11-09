@@ -75,8 +75,6 @@ echo "heartbeatIntervalMs: 50000" >> config.yml
 echo "localDiskPath: /tmp" >> config.yml
 echo "maxCachedArtifacts: 2" >> config.yml
 echo "pollForTasks: ${POLL_FOR_TASKS:-false}" >> config.yml
-echo "grpcServiceEnabled: ${GRPC_SERVICE_ENABLED:-false}" >> config.yml
-echo "grpcServiceConnectorPort: ${GRPC_SERVICE_CONNECTOR_PORT:-8080}" >> config.yml
 echo "doUpgrade: false" >> config.yml
 echo "dynamicHandlingOfRequestEnabled: ${DYNAMIC_REQUEST_HANDLING:-false}" >> config.yml
 
@@ -86,6 +84,7 @@ append_config "installClientToolsInBackground" $INSTALL_CLIENT_TOOLS_IN_BACKGROU
 append_config "clientCertificateFilePath" $DELEGATE_CLIENT_CERTIFICATE_PATH
 append_config "clientCertificateKeyFilePath" $DELEGATE_CLIENT_CERTIFICATE_KEY_PATH
 append_config "grpcAuthorityModificationDisabled" ${GRPC_AUTHORITY_MODIFICATION_DISABLED:-false}
+append_config "enforceHostnameVerification" ${DELEGATE_ENFORCE_HOSTNAME_VERIFICATION:-false}
 # Intended for debugging, has to be set explicitly as its never set in generated yaml.
 append_config "trustAllCertificates" ${TRUST_ALL_CERTIFICATES:-false}
 append_config "workingDir" ${WORKING_DIR:-/opt/harness-delegate/}
@@ -111,4 +110,9 @@ source /opt/harness-delegate/connectivity_check.sh
 
 # 5. Start the delegate
 JAVA_OPTS=${JAVA_OPTS//UseCGroupMemoryLimitForHeap/UseContainerSupport}
-exec java $PROXY_SYS_PROPS -XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=40.0 -XX:+IgnoreUnrecognizedVMOptions -XX:+HeapDumpOnOutOfMemoryError -XX:+UseParallelGC -XX:MaxGCPauseMillis=500 -Dfile.encoding=UTF-8 -Dcom.sun.jndi.ldap.object.disableEndpointIdentification=true -DLANG=en_US.UTF-8 --illegal-access=debug --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens java.base/java.time=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.lang.invoke=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED --add-opens java.base/java.nio.file=ALL-UNNAMED --add-opens java.base/java.util.concurrent=ALL-UNNAMED --add-opens java.xml/com.sun.org.apache.xpath.internal=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-exports java.xml/com.sun.org.apache.xerces.internal.parsers=ALL-UNNAMED --add-exports java.base/sun.nio.ch=ALL-UNNAMED $JAVA_OPTS -cp ${CLASSPATH} org.springframework.boot.loader.JarLauncher server config.yml
+JAVA_CMD="java $PROXY_SYS_PROPS -XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=40.0 -XX:+IgnoreUnrecognizedVMOptions -XX:+HeapDumpOnOutOfMemoryError -XX:+UseParallelGC -XX:MaxGCPauseMillis=500 -Dfile.encoding=UTF-8 -Dcom.sun.jndi.ldap.object.disableEndpointIdentification=true -DLANG=en_US.UTF-8 --illegal-access=debug --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens java.base/java.time=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.lang.invoke=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED --add-opens java.base/java.nio.file=ALL-UNNAMED --add-opens java.base/java.util.concurrent=ALL-UNNAMED --add-opens java.xml/com.sun.org.apache.xpath.internal=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-exports java.xml/com.sun.org.apache.xerces.internal.parsers=ALL-UNNAMED --add-exports java.base/sun.nio.ch=ALL-UNNAMED $JAVA_OPTS -cp ${CLASSPATH} org.springframework.boot.loader.JarLauncher server config.yml"
+if [ "${TINI_ENABLED:-true}" = "true" ] && command -v tini >/dev/null 2>&1; then
+  exec tini -- $JAVA_CMD
+else
+  exec $JAVA_CMD
+fi
